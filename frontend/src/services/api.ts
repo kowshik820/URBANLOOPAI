@@ -9,7 +9,9 @@ import {
   TransportCalculationResult,
   DashboardSummary,
   UserActivity,
-  RequestStatus
+  RequestStatus,
+  RewardItem,
+  RedeemedVoucher
 } from '../types';
 import {
   DEMO_WASTE_ITEMS,
@@ -17,7 +19,8 @@ import {
   DEMO_EWASTE_FACILITIES,
   DEMO_EWASTE_REQUESTS,
   DEMO_DASHBOARD_SUMMARY,
-  DEMO_USER_ACTIVITIES
+  DEMO_USER_ACTIVITIES,
+  DEMO_REWARDS
 } from './demoData';
 
 // API Configuration
@@ -38,6 +41,7 @@ class ApiService {
   private localRecyclingRequests: RecyclingRequest[] = [];
   private localEWasteRequests: EWasteRequest[] = [];
   private localActivities: UserActivity[] = [];
+  private localVouchers: RedeemedVoucher[] = [];
 
   constructor() {
     this.initLocalStorage();
@@ -59,10 +63,14 @@ class ApiService {
       this.localActivities = storedAct
         ? JSON.parse(storedAct)
         : [...DEMO_USER_ACTIVITIES];
+
+      const storedVouchers = localStorage.getItem('urbanloop_demo_vouchers');
+      this.localVouchers = storedVouchers ? JSON.parse(storedVouchers) : [];
     } catch {
       this.localRecyclingRequests = [...DEMO_RECYCLING_REQUESTS];
       this.localEWasteRequests = [...DEMO_EWASTE_REQUESTS];
       this.localActivities = [...DEMO_USER_ACTIVITIES];
+      this.localVouchers = [];
     }
   }
 
@@ -434,6 +442,62 @@ class ApiService {
     };
     this.localActivities.unshift(newAct);
     localStorage.setItem('urbanloop_demo_activities', JSON.stringify(this.localActivities));
+  }
+
+  // --- REWARDS & VOUCHERS ---
+  public async getRewards(): Promise<RewardItem[]> {
+    return DEMO_REWARDS;
+  }
+
+  public getRedeemedVouchers(): RedeemedVoucher[] {
+    return [...this.localVouchers];
+  }
+
+  public async redeemReward(
+    reward: RewardItem,
+    user: { id: string; name: string }
+  ): Promise<RedeemedVoucher> {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const randomSegment = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    const randomSegment2 = Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+
+    let prefix = 'AMZN';
+    if (reward.category === 'Public Transit') prefix = 'METRO';
+    else if (reward.category === 'Utility Credits') prefix = 'UTIL';
+    else if (reward.category === 'Eco Store') prefix = 'ECO';
+    else if (reward.category === 'Green Planting') prefix = 'TREE';
+
+    const voucherCode = `${prefix}-${randomSegment}-${randomSegment2}`;
+
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+    const newVoucher: RedeemedVoucher = {
+      id: `vouch-${Date.now()}`,
+      rewardId: reward.id,
+      title: reward.title,
+      voucherCode,
+      pointsSpent: reward.pointsRequired,
+      redeemedAt: new Date().toISOString(),
+      expiresAt,
+      provider: reward.provider,
+      discountValue: reward.discountValue,
+      status: 'ACTIVE'
+    };
+
+    this.localVouchers.unshift(newVoucher);
+    localStorage.setItem('urbanloop_demo_vouchers', JSON.stringify(this.localVouchers));
+
+    // Log in user activity
+    this.logLocalActivity({
+      userId: user.id,
+      activityType: 'REWARD_REDEEMED',
+      title: `Claimed: ${reward.title}`,
+      description: `Redeemed ${reward.pointsRequired} points for ${reward.discountValue} voucher (${voucherCode})`,
+      pointsEarned: 0,
+      co2SavedKg: 0
+    });
+
+    return newVoucher;
   }
 }
 

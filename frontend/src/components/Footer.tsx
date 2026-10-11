@@ -39,6 +39,7 @@ export const Footer: React.FC = () => {
               <li><Link to="/ewaste" className="hover:text-emerald-400 transition">Certified E-Waste Management</Link></li>
               <li><Link to="/solar" className="hover:text-emerald-400 transition">Rooftop Solar Model</Link></li>
               <li><Link to="/transport" className="hover:text-emerald-400 transition">EV & Multi-Modal Transit</Link></li>
+              <li><Link to="/rewards" className="hover:text-emerald-400 transition font-medium text-emerald-300">Eco Rewards & Amazon Vouchers</Link></li>
             </ul>
           </div>
 

@@ -141,13 +141,41 @@ export interface TransportCalculationResult {
 export interface UserActivity {
   id: string;
   userId: string;
-  activityType: 'WASTE_LOGGED' | 'RECYCLING_COLLECTED' | 'EWASTE_SCHEDULED' | 'SOLAR_SIMULATED' | 'GREEN_COMMUTE';
+  activityType: 'WASTE_LOGGED' | 'RECYCLING_COLLECTED' | 'EWASTE_SCHEDULED' | 'SOLAR_SIMULATED' | 'GREEN_COMMUTE' | 'REWARD_REDEEMED';
   title: string;
   description: string;
   pointsEarned: number;
   co2SavedKg: number;
   timestamp: string;
   isDemo?: boolean;
+}
+
+export type RewardCategory = 'Amazon Vouchers' | 'Public Transit' | 'Utility Credits' | 'Eco Store' | 'Green Planting';
+
+export interface RewardItem {
+  id: string;
+  title: string;
+  category: RewardCategory;
+  pointsRequired: number;
+  description: string;
+  provider: string;
+  discountValue: string;
+  terms: string;
+  availableStock: number;
+  highlight?: boolean;
+}
+
+export interface RedeemedVoucher {
+  id: string;
+  rewardId: string;
+  title: string;
+  voucherCode: string;
+  pointsSpent: number;
+  redeemedAt: string;
+  expiresAt: string;
+  provider: string;
+  discountValue: string;
+  status: 'ACTIVE' | 'USED';
 }
 
 export interface DashboardSummary {

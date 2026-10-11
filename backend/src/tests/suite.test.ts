@@ -97,3 +97,31 @@ test('Auth Rules - Prevents unauthorized role forgery', async (t) => {
   assert.equal(sanitizeRole('collector'), 'collector');
   assert.equal(sanitizeRole('resident'), 'resident');
 });
+
+// Test 5: Rewards & Voucher Redemption Logic
+test('Rewards & Vouchers - Balance verification and voucher code generation', async (t) => {
+  const deductPoints = (userPoints: number, requiredPoints: number) => {
+    if (userPoints < requiredPoints) return { success: false, newBalance: userPoints };
+    return { success: true, newBalance: userPoints - requiredPoints };
+  };
+
+  // Sufficient balance test
+  const claimAmazon10 = deductPoints(240, 100); // 240 pts balance, 100 pts needed for $10 Amazon
+  assert.equal(claimAmazon10.success, true);
+  assert.equal(claimAmazon10.newBalance, 140);
+
+  // Insufficient balance test
+  const claimAmazon50 = deductPoints(140, 450); // 140 pts balance, 450 pts needed for $50 Amazon
+  assert.equal(claimAmazon50.success, false);
+  assert.equal(claimAmazon50.newBalance, 140); // balance remains unchanged
+
+  // Voucher Code format validation
+  const generateVoucherCode = (category: string) => {
+    const prefix = category === 'Amazon Vouchers' ? 'AMZN' : 'METRO';
+    return `${prefix}-ABCD-1234`;
+  };
+
+  const amzCode = generateVoucherCode('Amazon Vouchers');
+  assert.ok(amzCode.startsWith('AMZN-'));
+  assert.equal(amzCode.length, 14);
+});

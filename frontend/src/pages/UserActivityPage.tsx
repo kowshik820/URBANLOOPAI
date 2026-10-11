@@ -12,8 +12,10 @@ import {
   Truck,
   Sun,
   Filter,
-  CheckCircle2
+  CheckCircle2,
+  Gift
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const UserActivityPage: React.FC = () => {
   const { user } = useAuth();
@@ -51,6 +53,7 @@ export const UserActivityPage: React.FC = () => {
       case 'EWASTE_SCHEDULED': return Truck;
       case 'SOLAR_SIMULATED': return Sun;
       case 'GREEN_COMMUTE': return Sparkles;
+      case 'REWARD_REDEEMED': return Gift;
       default: return Leaf;
     }
   };
@@ -74,12 +77,23 @@ export const UserActivityPage: React.FC = () => {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
-          <span className="text-xs font-semibold text-slate-500">Total Eco Points Earned</span>
-          <p className="text-2xl font-extrabold text-emerald-600 font-mono mt-2">
-            {user?.points || totalPoints} <span className="text-xs font-normal text-slate-400 font-sans">pts</span>
-          </p>
-          <span className="text-[11px] text-emerald-700 font-semibold block mt-1">Tier: Urban Eco Steward</span>
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <span className="text-xs font-semibold text-slate-500">Available Eco Balance</span>
+            <p className="text-2xl font-extrabold text-emerald-600 font-mono mt-2">
+              {user?.points || totalPoints} <span className="text-xs font-normal text-slate-400 font-sans">pts</span>
+            </p>
+            <span className="text-[11px] text-emerald-700 font-semibold block mt-1">Tier: Urban Eco Steward</span>
+          </div>
+          <div className="pt-3 border-t border-slate-100 mt-3">
+            <Link
+              to="/rewards"
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+            >
+              <Gift className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Redeem for Amazon Vouchers →</span>
+            </Link>
+          </div>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
@@ -104,7 +118,7 @@ export const UserActivityPage: React.FC = () => {
         <span className="text-xs font-semibold text-slate-400 flex items-center gap-1 mr-1">
           <Filter className="w-3.5 h-3.5" /> Filter by:
         </span>
-        {['ALL', 'RECYCLING_COLLECTED', 'EWASTE_SCHEDULED', 'SOLAR_SIMULATED', 'GREEN_COMMUTE', 'WASTE_LOGGED'].map((f) => (
+        {['ALL', 'RECYCLING_COLLECTED', 'EWASTE_SCHEDULED', 'SOLAR_SIMULATED', 'GREEN_COMMUTE', 'REWARD_REDEEMED', 'WASTE_LOGGED'].map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}

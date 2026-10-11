@@ -13,6 +13,7 @@ import { RecyclingMarketplacePage } from './pages/RecyclingMarketplacePage';
 import { EWastePage } from './pages/EWastePage';
 import { SolarCalculatorPage } from './pages/SolarCalculatorPage';
 import { TransportComparisonPage } from './pages/TransportComparisonPage';
+import { RewardsPage } from './pages/RewardsPage';
 import { SustainabilityInsightsPage } from './pages/SustainabilityInsightsPage';
 import { UserActivityPage } from './pages/UserActivityPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
@@ -36,6 +37,7 @@ export function App() {
                 <Route path="/ewaste" element={<EWastePage />} />
                 <Route path="/solar" element={<SolarCalculatorPage />} />
                 <Route path="/transport" element={<TransportComparisonPage />} />
+                <Route path="/rewards" element={<RewardsPage />} />
                 <Route path="/insights" element={<SustainabilityInsightsPage />} />
                 <Route path="/activity" element={<UserActivityPage />} />
                 <Route path="/admin" element={<AdminDashboardPage />} />

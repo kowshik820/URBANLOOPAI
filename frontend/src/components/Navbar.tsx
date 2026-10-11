@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Award,
-  ChevronDown
+  ChevronDown,
+  Gift
 } from 'lucide-react';
 import { UserRole } from '../types';
 
@@ -31,6 +32,7 @@ export const Navbar: React.FC = () => {
     { name: 'E-Waste', path: '/ewaste', icon: Truck },
     { name: 'Solar', path: '/solar', icon: Sun },
     { name: 'Transit', path: '/transport', icon: Truck },
+    { name: 'Rewards', path: '/rewards', icon: Gift },
     { name: 'Insights', path: '/insights', icon: LineChart },
     { name: 'Admin', path: '/admin', icon: ShieldCheck },
   ];

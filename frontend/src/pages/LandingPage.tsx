@@ -12,7 +12,8 @@ import {
   Cpu,
   Layers,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Gift
 } from 'lucide-react';
 import { useAppMode } from '../context/AppModeContext';
 
@@ -59,6 +60,14 @@ export const LandingPage: React.FC = () => {
       color: 'from-purple-500 to-pink-600',
       badge: 'Low Carbon',
       path: '/transport'
+    },
+    {
+      title: 'Eco Rewards & Amazon Vouchers',
+      description: 'Redeem your verified eco points for instant Amazon Gift Cards, unlimited city metro transit passes, and municipal utility bill credits.',
+      icon: Gift,
+      color: 'from-amber-500 to-orange-600',
+      badge: 'Real Rewards',
+      path: '/rewards'
     },
     {
       title: 'City Sustainability Analytics',

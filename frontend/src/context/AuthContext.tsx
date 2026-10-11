@@ -8,6 +8,7 @@ interface AuthContextType {
   logout: () => void;
   switchRole: (role: UserRole) => void;
   addPoints: (points: number) => void;
+  deductPoints: (points: number) => boolean;
 }
 
 const PRESET_USERS: Record<UserRole, User> = {
@@ -90,6 +91,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const deductPoints = (amount: number): boolean => {
+    if (!user || user.points < amount) {
+      return false;
+    }
+    setUser(prev => prev ? { ...prev, points: prev.points - amount } : null);
+    return true;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -98,7 +107,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         switchRole,
-        addPoints
+        addPoints,
+        deductPoints
       }}
     >
       {children}

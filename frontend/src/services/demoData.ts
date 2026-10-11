@@ -4,7 +4,8 @@ import {
   EWasteFacility,
   EWasteRequest,
   DashboardSummary,
-  UserActivity
+  UserActivity,
+  RewardItem
 } from '../types';
 
 export const DEMO_WASTE_ITEMS: WasteItem[] = [
@@ -398,3 +399,109 @@ export const DEMO_DASHBOARD_SUMMARY: DashboardSummary = {
     { name: 'E-Waste & Batteries', value: 8, color: '#ef4444' }
   ]
 };
+
+export const DEMO_REWARDS: RewardItem[] = [
+  {
+    id: 'rew-amz-5',
+    title: '$5 Amazon Gift Card',
+    category: 'Amazon Vouchers',
+    pointsRequired: 50,
+    description: 'Redeemable for millions of items across Amazon.com. Digital code delivered immediately upon redemption.',
+    provider: 'Amazon Pay',
+    discountValue: '$5.00 USD',
+    terms: 'Valid for 1 year from claim. Redeemable in Amazon account balance. Non-transferable.',
+    availableStock: 142,
+    highlight: true
+  },
+  {
+    id: 'rew-amz-10',
+    title: '$10 Amazon Gift Card',
+    category: 'Amazon Vouchers',
+    pointsRequired: 100,
+    description: 'Instant Amazon voucher credit to spend on eco-friendly goods, books, essentials, and home products.',
+    provider: 'Amazon Pay',
+    discountValue: '$10.00 USD',
+    terms: 'Instant code generated. No expiration date once applied to your Amazon balance.',
+    availableStock: 89,
+    highlight: true
+  },
+  {
+    id: 'rew-amz-25',
+    title: '$25 Amazon Gift Card',
+    category: 'Amazon Vouchers',
+    pointsRequired: 240,
+    description: 'Premium $25 voucher reward for dedicated urban recycling stewards and green commuters.',
+    provider: 'Amazon Pay',
+    discountValue: '$25.00 USD',
+    terms: 'Single-use digital redemption token. Valid across Amazon global storefronts.',
+    availableStock: 34,
+    highlight: true
+  },
+  {
+    id: 'rew-metro-1d',
+    title: 'City Metro 1-Day Unlimited Transit Pass',
+    category: 'Public Transit',
+    pointsRequired: 40,
+    description: 'Unlimited 24-hour access to municipal electric rail, subway, and rapid bus transit lines.',
+    provider: 'Metro Transit Authority',
+    discountValue: '$7.50 Value',
+    terms: 'Scan digital QR at any turnstile or ticket validator. Valid within 30 days of redemption.',
+    availableStock: 250
+  },
+  {
+    id: 'rew-metro-7d',
+    title: 'City Metro 7-Day Clean Commuter Pass',
+    category: 'Public Transit',
+    pointsRequired: 180,
+    description: 'Full one-week commuter pass for zero-emissions electric rail and municipal bus fleets.',
+    provider: 'Metro Transit Authority',
+    discountValue: '$32.00 Value',
+    terms: 'Valid for 7 consecutive days starting from first turnstile tap.',
+    availableStock: 65,
+    highlight: true
+  },
+  {
+    id: 'rew-util-15',
+    title: '$15 Municipal Clean Water & Sanitation Rebate',
+    category: 'Utility Credits',
+    pointsRequired: 150,
+    description: 'Direct credit applied to your next monthly municipal water, sewage, or waste utility bill.',
+    provider: 'City Department of Public Utilities',
+    discountValue: '$15.00 Bill Credit',
+    terms: 'Provide account number at checkout or apply automated rebate via smart meter portal.',
+    availableStock: 120
+  },
+  {
+    id: 'rew-util-25',
+    title: '$25 Rooftop Clean Solar Tariff Offset',
+    category: 'Utility Credits',
+    pointsRequired: 220,
+    description: 'Offset token credited directly onto home electricity grid meter invoice for verified green energy producers.',
+    provider: 'CleanGrid Energy Co-op',
+    discountValue: '$25.00 Power Credit',
+    terms: 'Eligible for net-metered residential electricity accounts.',
+    availableStock: 45
+  },
+  {
+    id: 'rew-store-10',
+    title: '$10 Zero-Waste Bulk Market Voucher',
+    category: 'Eco Store',
+    pointsRequired: 75,
+    description: 'In-store credit for package-free grains, organic produce, solid shampoos, and refillable household essentials.',
+    provider: 'EarthFirst Zero-Waste Store',
+    discountValue: '$10.00 Off Any $25 Purchase',
+    terms: 'Show digital barcode at register. Valid at all metropolitan store branches.',
+    availableStock: 80
+  },
+  {
+    id: 'rew-plant-tree',
+    title: 'Plant a Native Oak Tree in Urban Green Belt',
+    category: 'Green Planting',
+    pointsRequired: 75,
+    description: 'Fund the planting and 3-year care of a native sapling with GPS coordinates in the city green corridor.',
+    provider: 'Urban Forest Preservation Trust',
+    discountValue: '1 Native Tree + GPS Certificate',
+    terms: 'Certificate issued with satellite GPS coordinates and seasonal growth photos.',
+    availableStock: 500
+  }
+];
