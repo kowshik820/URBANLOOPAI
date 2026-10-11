@@ -9,11 +9,7 @@ import {
   ShieldCheck,
   BatteryCharging,
   HardDrive,
-  AlertTriangle,
-  CheckCircle2,
   Building,
-  Award,
-  ExternalLink,
   Trash2,
   FileCheck
 } from 'lucide-react';
@@ -93,7 +89,7 @@ export const EWastePage: React.FC = () => {
 
     try {
       setSubmitting(true);
-      const newReq = await api.createEWasteRequest({
+      await api.createEWasteRequest({
         userId: user?.id || 'user-01',
         userName: user?.name || 'Resident',
         address,
@@ -373,8 +369,7 @@ export const EWastePage: React.FC = () => {
                           setItemsToRegister(updated);
                         }}
                         className="px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg bg-white"
-                      >
-                      </input>
+                      />
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 pt-1 text-[11px] text-slate-600">

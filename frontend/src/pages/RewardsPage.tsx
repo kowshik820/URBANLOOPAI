@@ -13,12 +13,8 @@ import {
   CheckCircle2,
   Copy,
   ExternalLink,
-  Clock,
   Sparkles,
-  AlertCircle,
-  HelpCircle,
-  QrCode,
-  ArrowRight
+  AlertCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
