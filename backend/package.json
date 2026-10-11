@@ -1,0 +1,20 @@
+{
+  "name": "urbanloop-backend",
+  "version": "1.0.0",
+  "description": "UrbanLoop AI Serverless Backend for AWS Lambda & DynamoDB",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.750.0",
+    "@aws-sdk/lib-dynamodb": "^3.750.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^22.13.0",
+    "typescript": "^5.7.3"
+  }
+}

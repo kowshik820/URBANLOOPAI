@@ -1,0 +1,299 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  UrbanLoop AI - Serverless Backend for Waste, E-Waste, Rooftop Solar & Clean Mobility.
+  Optimized for cost-protection ($200 AWS credits) using HTTP API, Node.js 20 & DynamoDB On-Demand.
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 256
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+    LoggingConfig:
+      LogFormat: JSON
+    Environment:
+      Variables:
+        RECYCLING_TABLE: !Ref RecyclingTable
+        EWASTE_TABLE: !Ref EWasteTable
+        CATALOG_TABLE: !Ref CatalogTable
+        ACTIVITY_TABLE: !Ref ActivityTable
+
+Resources:
+  # ==========================================
+  # API GATEWAY (HTTP API v2)
+  # ==========================================
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - PATCH
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+          - X-Requested-With
+          - X-User-Role
+          - X-User-Id
+        AllowOrigins:
+          - '*'
+        MaxAge: 600
+
+  # ==========================================
+  # DYNAMODB TABLES (ON-DEMAND / 0 IDLE COST)
+  # ==========================================
+  RecyclingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: urbanloop-recycling-requests
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+
+  EWasteTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: urbanloop-ewaste-requests
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+
+  CatalogTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: urbanloop-waste-catalog
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+
+  ActivityTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: urbanloop-user-activity
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+
+  # ==========================================
+  # LAMBDA FUNCTIONS
+  # ==========================================
+  HealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/health.handler
+      Events:
+        Health:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /health
+            Method: GET
+
+  DashboardFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/dashboard.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RecyclingTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EWasteTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivityTable
+      Events:
+        Dashboard:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/dashboard
+            Method: GET
+
+  WasteKnowledgeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/wasteKnowledge.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CatalogTable
+      Events:
+        ListItems:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/waste-items
+            Method: GET
+        GetItem:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/waste-items/{id}
+            Method: GET
+
+  RecyclingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/recycling.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RecyclingTable
+      Events:
+        ListRequests:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/recycling
+            Method: GET
+        CreateRequest:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/recycling
+            Method: POST
+        UpdateRequest:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/recycling/{id}
+            Method: PATCH
+
+  EWasteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/ewaste.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EWasteTable
+      Events:
+        ListEWaste:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/ewaste
+            Method: GET
+        CreateEWaste:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/ewaste
+            Method: POST
+        UpdateEWaste:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/ewaste/{id}
+            Method: PATCH
+
+  SolarFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/solar.handler
+      Events:
+        CalculateSolar:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/solar/calculate
+            Method: POST
+
+  TransportFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/transport.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivityTable
+      Events:
+        CalculateTransport:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/transport/calculate
+            Method: POST
+        LogTrip:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/transport/log-trip
+            Method: POST
+
+  UserActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: handlers/userActivity.handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivityTable
+      Events:
+        ListActivity:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/user/activity
+            Method: GET
+        LogActivity:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Path: /api/user/points
+            Method: POST
+
+Outputs:
+  HttpApiUrl:
+    Description: "Amazon API Gateway HTTP API Endpoint URL"
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+    Export:
+      Name: UrbanLoopHttpApiUrl
+
+  RecyclingTableName:
+    Description: "DynamoDB Table for Recycling Requests"
+    Value: !Ref RecyclingTable
+
+  EWasteTableName:
+    Description: "DynamoDB Table for E-Waste Requests"
+    Value: !Ref EWasteTable
+
+  CatalogTableName:
+    Description: "DynamoDB Table for Waste Segregation Catalog"
+    Value: !Ref CatalogTable
+
+  ActivityTableName:
+    Description: "DynamoDB Table for User Activities"
+    Value: !Ref ActivityTable
