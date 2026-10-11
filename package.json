@@ -1,0 +1,9 @@
+{
+  "name": "urbanloop-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UrbanLoop AI Sustainability Platform",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  }
+}
